@@ -1,9 +1,3 @@
-// Sticky top bar shadow on scroll
-const topbar = document.getElementById('topbar');
-window.addEventListener('scroll', () => {
-  topbar.classList.toggle('scrolled', window.scrollY > 8);
-});
-
 // Reveal-on-scroll
 const revealEls = document.querySelectorAll('.reveal');
 const io = new IntersectionObserver((entries) => {
@@ -13,24 +7,26 @@ const io = new IntersectionObserver((entries) => {
       io.unobserve(entry.target);
     }
   });
-}, { threshold: 0.12 });
+}, { threshold: 0.1 });
 revealEls.forEach(el => io.observe(el));
 
-// Copy email to clipboard
-const copyBtn = document.getElementById('copyEmail');
-if (copyBtn) {
-  const original = copyBtn.textContent;
-  copyBtn.addEventListener('click', async () => {
-    const email = copyBtn.dataset.email;
+// Copy email to clipboard (works for any button with data-email)
+function wireCopyButton(btn) {
+  if (!btn) return;
+  const original = btn.textContent;
+  btn.addEventListener('click', async () => {
+    const email = btn.dataset.email;
     try {
       await navigator.clipboard.writeText(email);
-      copyBtn.textContent = 'Copied to clipboard ✓';
+      btn.textContent = 'Copied ✓';
     } catch (e) {
       window.location.href = `mailto:${email}`;
     }
-    setTimeout(() => { copyBtn.textContent = original; }, 2000);
+    setTimeout(() => { btn.textContent = original; }, 1800);
   });
 }
+wireCopyButton(document.getElementById('copyEmail'));
+wireCopyButton(document.getElementById('copyEmail2'));
 
 // Footer year
 const yearEl = document.getElementById('year');
